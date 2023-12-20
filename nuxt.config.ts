@@ -4,8 +4,11 @@ export default defineNuxtConfig({
   alias: {
     '@': __dirname,
   },
-  modules: ['@nuxt/ui', '@nuxtjs/i18n', '@pinia/nuxt'],
+  modules: ['@nuxt/ui', '@nuxtjs/i18n', '@pinia/nuxt', '@vueuse/nuxt'],
   ui: {
     icons: ['carbon'],
+  },
+  colorMode: {
+    preference: 'light',
   },
 });

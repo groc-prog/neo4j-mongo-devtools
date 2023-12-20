@@ -8,16 +8,31 @@
     }
   },
   "gettingStarted": {
-    "title": "Choose a instance to start with",
+    "title": "Get started with the next generation of developer-tools",
+    "description": {
+      "beginning": "A new way to",
+      "highlightedFeatures": "visualize, develop and debug",
+      "middle": "your Neo4j and MongoDB databases. Build with the latest web technologies and a",
+      "highlightedDx": "DX in mind."
+    },
     "divider": "OR",
     "new": {
-      "title": "Get started with a new instance",
+      "title": "Start from scratch",
       "description": "We will get you right up and running with a brand new instance. We just have to take care of a bit of configuration first.",
       "button": "Create a new instance"
     },
     "existing": {
-      "title": "Start an existing instance",
-      "description": "If you already have an instance, you can start it here."
+      "title": "Continue where you left off",
+      "description": "Jump right back in the action and choose from previously defined instances.",
+      "button": "View saved instances"
+    }
+  },
+  "newInstance": {
+    "title": "Starting from scratch",
+    "description": "A new instance with no pre-configuration or relations. You will be connected and ready-to-go in no time.",
+    "divider": "OR",
+    "import": {
+      "description": "Import an existing configuration from a JSON-file. This will allow you to share your configuration with others."
     }
   }
 }

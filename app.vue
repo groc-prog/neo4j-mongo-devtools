@@ -1,7 +1,14 @@
-<script setup lang="ts"></script>
-
 <template>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <UContainer
+    :ui="{
+      base: 'h-screen overflow-y-auto',
+      constrained: 'max-w-none',
+    }"
+  >
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </UContainer>
+
+  <UNotifications />
 </template>

@@ -7,6 +7,23 @@ export enum GraphEntity {
 }
 
 /**
+ * The configuration for a relation between MongoDB and Neo4j.
+ */
+export interface DataRelation {
+  mongodb: {
+    database: string;
+    collection: string;
+    field: string;
+  };
+  neo4j: {
+    graphEntity: GraphEntity;
+    labels?: string[];
+    type?: string;
+    property: string;
+  };
+}
+
+/**
  * A application instance configuration.
  */
 export interface InstanceConfiguration {
@@ -19,10 +36,6 @@ export interface InstanceConfiguration {
    * The name of the instance.
    */
   name: string;
-  /**
-   * Whether the instance should be saved to MongoDB.
-   */
-  saveToMongo: boolean;
   /**
    * Customization options for the instance. This only affects the UI.
    */
@@ -37,36 +50,19 @@ export interface InstanceConfiguration {
     url: string;
     username: string;
     password: string;
-    hashCredentials: boolean;
-    additionalParams?: Record<string, any>;
   };
   /**
-   * The configuration for the MongoDB database connections. If omitted, the
-   * instance will only show UI elements for Neo4j.
+   * The configuration for the MongoDB database connections.
    */
-  mongo?: {
+  mongodb: {
     url: string;
     username: string;
     password: string;
-    hashCredentials: boolean;
-    additionalParams?: Record<string, any>;
   };
   /**
    * The configuration for the relations between MongoDB and Neo4j.
    * These configuration settings allow for automatic fetching of the related
    * MongoDB documents when querying Neo4j.
    */
-  relations: {
-    mongo: {
-      database: string;
-      collection: string;
-      field: string;
-    };
-    neo4j: {
-      graphEntity: GraphEntity;
-      labels?: string[];
-      type?: string;
-      property: string;
-    };
-  }[];
+  relations: DataRelation[];
 }

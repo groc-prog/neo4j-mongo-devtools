@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .highlighted {
+    @apply bg-primary-100 dark:bg-primary-950 text-primary px-2 py-0.5 rounded-lg font-medium;
+  }
+
+  .text-title {
+    @apply text-gray-900 dark:text-white;
+  }
+
+  .text-description {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+}
