@@ -1,0 +1,23 @@
+{
+  "navigation": {
+    "common": {
+      "editor": "Graph editor",
+      "instanceConfiguration": "Instance configuration",
+      "savedInstances": "Saved instances",
+      "settings": "Application settings"
+    }
+  },
+  "gettingStarted": {
+    "title": "Choose a instance to start with",
+    "divider": "OR",
+    "new": {
+      "title": "Get started with a new instance",
+      "description": "We will get you right up and running with a brand new instance. We just have to take care of a bit of configuration first.",
+      "button": "Create a new instance"
+    },
+    "existing": {
+      "title": "Start an existing instance",
+      "description": "If you already have an instance, you can start it here."
+    }
+  }
+}
