@@ -1,5 +1,7 @@
 <script setup lang="ts">
 const { t } = useI18n();
+
+const files = ref(null);
 </script>
 
 <template>
@@ -18,7 +20,9 @@ const { t } = useI18n();
       :label="t('newInstance.divider')"
     />
 
-    <p></p>
-    <InputFile class="h-64"> Upload file here </InputFile>
+    <InputFile
+      v-model:files="files"
+      class="h-64"
+    />
   </div>
 </template>

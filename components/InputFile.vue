@@ -1,4 +1,12 @@
 <script setup lang="ts">
+const props = defineProps<{
+  files: FileList | null;
+}>();
+
+const emit = defineEmits<{
+  (e: 'update:files', files: FileList | null): void;
+}>();
+
 const fileInput = ref<HTMLInputElement | null>(null);
 const isDragOver = ref(false);
 
@@ -6,8 +14,15 @@ function onDrop(e: DragEvent) {
   isDragOver.value = false;
   if (fileInput.value === null) return;
 
-  const files = e.dataTransfer?.items;
-  console.log(files);
+  fileInput.value.files = e.dataTransfer?.files || null;
+  emit('update:files', fileInput.value.files);
+}
+
+function onFileChange(e: Event) {
+  if (fileInput.value === null) return;
+
+  fileInput.value.files = (e.target as HTMLInputElement).files || null;
+  emit('update:files', fileInput.value.files);
 }
 
 function onDragOver() {
@@ -17,6 +32,12 @@ function onDragOver() {
 function onDragLeave() {
   isDragOver.value = false;
 }
+
+onMounted(() => {
+  if (fileInput.value === null) return;
+
+  fileInput.value.files = unref(props.files);
+});
 </script>
 
 <template>
@@ -35,13 +56,32 @@ function onDragLeave() {
           'bg-white dark:bg-gray-900': !isDragOver,
         }"
       >
-        <div class="flex flex-col items-center justify-center">
-          <slot />
+        <div
+          v-if="fileInput?.files == undefined || fileInput.files.length === 0"
+          class="flex flex-col items-center gap-y-2 justify-center text-description"
+        >
+          <UIcon
+            name="i-carbon-upload"
+            class="w-8 h-8"
+          />
+          <p>{{ $t('inputFile.dropzoneEmpty') }}</p>
+        </div>
+        <div
+          v-else
+          class="flex flex-col items-center gap-y-2 justify-center"
+        >
+          <div class="flex p-3 rounded-full bg-green-100 dark:bg-green-950">
+            <UIcon
+              name="i-carbon-checkmark-outline"
+              class="w-8 h-8 text-green-500"
+            />
+          </div>
+          <p class="text-description">{{ $t('inputFile.dropzoneFiles', { count: fileInput?.files?.length }) }}</p>
         </div>
       </div>
 
       <svg
-        class="absolute inset-0 h-full w-full stroke-gray-900/10 dark:stroke-white/10"
+        class="absolute inset-0 h-full w-full stroke-gray-900/5 dark:stroke-white/5"
         fill="none"
       >
         <defs>
@@ -69,6 +109,9 @@ function onDragLeave() {
         ref="fileInput"
         type="file"
         class="hidden"
+        multiple
+        accept="application/json"
+        @change="onFileChange"
       />
     </label>
   </div>
