@@ -1,6 +1,7 @@
 import { MongoClient } from 'mongodb';
 import { auth } from 'neo4j-driver';
 
+export type MongoDBMechanism = 'default';
 export type Neo4jScheme = 'neo4j://' | 'bolt://';
 type Neo4jAuthType = Exclude<keyof typeof auth, 'custom'> | 'none';
 
@@ -115,7 +116,7 @@ export interface MongoDBAuthConfiguration {
   /**
    * The authentication mechanism to use.
    */
-  mechanism: 'default';
+  mechanism: MongoDBMechanism;
   parameters: MongoDBDefaultAuth;
 }
 

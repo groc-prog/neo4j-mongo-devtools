@@ -32,10 +32,10 @@ const schema = z.object({
       password: z.string().min(1, t('neo4jConfiguration.validation.password')),
     }),
     z.object({
-      base64EncodedTicket: z.string().min(1),
+      base64EncodedTicket: z.string().min(1, t('neo4jConfiguration.validation.base64EncodedTicket')),
     }),
     z.object({
-      base64EncodedToken: z.string().min(1),
+      base64EncodedToken: z.string().min(1, t('neo4jConfiguration.validation.base64EncodedToken')),
     }),
   ]),
 });
@@ -87,6 +87,10 @@ const emitState = _.debounce(() => {
     })
     .catch(() => {});
 }, 250);
+
+defineExpose({
+  form,
+});
 </script>
 
 <template>
@@ -116,7 +120,6 @@ const emitState = _.debounce(() => {
       </UFormGroup>
 
       <UFormGroup
-        eager-validation
         name="url"
         :ui="{
           wrapper: 'w-full',
@@ -166,7 +169,6 @@ const emitState = _.debounce(() => {
       class="space-y-4"
     >
       <UFormGroup
-        eager-validation
         :label="$t('neo4jConfiguration.label.username')"
         name="parameters.username"
       >
@@ -186,7 +188,6 @@ const emitState = _.debounce(() => {
       </UFormGroup>
 
       <UFormGroup
-        eager-validation
         :label="$t('neo4jConfiguration.label.password')"
         name="parameters.password"
       >
@@ -212,7 +213,6 @@ const emitState = _.debounce(() => {
       class="space-y-4"
     >
       <UFormGroup
-        eager-validation
         :label="$t('neo4jConfiguration.label.base64EncodedTicket')"
         name="parameters.base64EncodedTicket"
       >
@@ -238,7 +238,6 @@ const emitState = _.debounce(() => {
       class="space-y-4"
     >
       <UFormGroup
-        eager-validation
         :label="$t('neo4jConfiguration.label.base64EncodedToken')"
         name="parameters.base64EncodedToken"
       >

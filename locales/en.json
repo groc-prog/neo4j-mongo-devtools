@@ -21,15 +21,15 @@
     }
   },
   "gettingStarted": {
-    "title": "Get started with the next generation of developer tooling 🚀",
+    "title": "The next generation of developer tooling for Neo4j and MongoDB 🚀",
     "description": {
       "beginning": "A new way to",
       "highlightedFeatures": "visualize, develop and debug",
-      "middle": "your Neo4j and MongoDB databases. Build with the latest web technologies and a",
-      "highlightedDx": "DX in mind."
+      "middle": "your Neo4j and MongoDB databases. Build with the latest web technologies and",
+      "highlightedDx": "developer experience in mind."
     },
     "new": {
-      "title": "Start from scratch",
+      "title": "No instances? No problem!",
       "description": "We will get you right up and running with a brand new instance. We just have to take care of a bit of configuration first.",
       "button": "Create a new instance"
     }
@@ -73,7 +73,9 @@
     "validation": {
       "host": "Host address can not be empty.",
       "username": "Username can not be empty.",
-      "password": "Password can not be empty."
+      "password": "Password can not be empty.",
+      "base64EncodedTicket": "Ticket can not be empty.",
+      "base64EncodedToken": "Token can not be empty."
     }
   },
   "mongodbConfiguration": {
@@ -87,6 +89,11 @@
       "uri": "your-uri",
       "username": "your-username",
       "password": "your-password"
+    },
+    "validation": {
+      "uri": "URI can not be empty.",
+      "username": "Username can not be empty.",
+      "password": "Password can not be empty."
     }
   }
 }
