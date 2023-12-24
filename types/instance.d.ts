@@ -111,7 +111,14 @@ export interface MongoDBAuthConfiguration {
    * The URL of the MongoDB database.
    */
   uri: string;
+  /**
+   * The authentication mechanism to use.
+   */
+  mechanism: 'default';
+  parameters: MongoDBDefaultAuth;
+}
 
+export interface MongoDBDefaultAuth {
   username: string;
   password: string;
 }

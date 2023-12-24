@@ -7,6 +7,11 @@
       "bearer": "Bearer token authentication"
     }
   },
+  "mongodb": {
+    "auth": {
+      "default": "Default authentication"
+    }
+  },
   "navigation": {
     "common": {
       "editor": "Graph editor",
@@ -65,6 +70,19 @@
       "password": "your-password",
       "base64EncodedTicket": "your-base64-encoded-ticket",
       "base64EncodedToken": "your-base64-encoded-token"
+    }
+  },
+  "mongodbConfiguration": {
+    "label": {
+      "connection": "Connection URL",
+      "mechanism": "Authentication mechanism",
+      "username": "Username",
+      "password": "Password"
+    },
+    "placeholder": {
+      "uri": "your-uri",
+      "username": "your-username",
+      "password": "your-password"
     }
   }
 }
