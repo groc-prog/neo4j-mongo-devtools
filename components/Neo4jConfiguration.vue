@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import type { Neo4jAuthConfiguration, Neo4jBasicAuth, Neo4jKerberosAuth, Neo4jBearerAuth } from '~/types/instance';
+import type { UForm } from '#build/components';
+import _ from 'lodash';
+import { z } from 'zod';
+
+import type {
+  Neo4jAuthConfiguration,
+  Neo4jBasicAuth,
+  Neo4jKerberosAuth,
+  Neo4jBearerAuth,
+  Neo4jScheme,
+} from '~/types/instance';
 
 const props = defineProps<{
   state: Partial<Neo4jAuthConfiguration>;
@@ -8,8 +18,29 @@ const emit = defineEmits<{
   (e: 'update:state', state: Partial<Neo4jAuthConfiguration>): void;
 }>();
 
+const { t } = useI18n();
 const { schemeOptions, authOptions } = useNeo4jConfig();
 
+const schema = z.object({
+  url: z.string().min(1, t('neo4jConfiguration.validation.host')),
+  scheme: z.string().refine((value) => schemeOptions.value.includes(value as Neo4jScheme)),
+  type: z.string().refine((value) => authOptions.value.map((option) => option.value).includes(value)),
+  parameters: z.union([
+    z.undefined(),
+    z.object({
+      username: z.string().min(1, t('neo4jConfiguration.validation.username')),
+      password: z.string().min(1, t('neo4jConfiguration.validation.password')),
+    }),
+    z.object({
+      base64EncodedTicket: z.string().min(1),
+    }),
+    z.object({
+      base64EncodedToken: z.string().min(1),
+    }),
+  ]),
+});
+
+const form = ref<typeof UForm | null>(null);
 const state = reactive<Partial<Neo4jAuthConfiguration>>({
   ...props.state,
 });
@@ -45,41 +76,69 @@ watch(
   },
   { immediate: true },
 );
+
+const emitState = _.debounce(() => {
+  if (form.value === null) return;
+
+  form.value
+    .validate()
+    .then(() => {
+      emit('update:state', state);
+    })
+    .catch(() => {});
+}, 250);
 </script>
 
 <template>
   <UForm
+    ref="form"
+    :schema="schema"
     :state="state"
     class="space-y-4"
   >
     <UFormGroup
+      required
       :label="$t('neo4jConfiguration.label.connection')"
       :ui="{
-        container: 'flex flex-row items-center gap-x-2 w-full',
+        container: 'flex flex-row gap-x-2 w-full',
       }"
     >
-      <USelectMenu
-        v-model="state.scheme"
-        size="md"
-        :options="schemeOptions"
-        :ui="{
-          base: 'min-w-[7rem]',
-        }"
-        @update:model-value="emit('update:state', state)"
-      />
-      <UInput
-        v-model="state.url"
-        type="text"
-        size="md"
-        :placeholder="$t('neo4jConfiguration.placeholder.host')"
+      <UFormGroup name="scheme">
+        <USelectMenu
+          v-model="state.scheme"
+          size="md"
+          :options="schemeOptions"
+          :ui="{
+            base: 'min-w-[7rem]',
+          }"
+          @update:model-value="emitState()"
+        />
+      </UFormGroup>
+
+      <UFormGroup
+        eager-validation
+        name="url"
         :ui="{
           wrapper: 'w-full',
         }"
-        @update:model-value="emit('update:state', state)"
-      />
+      >
+        <template #default="{ error }">
+          <UInput
+            v-model="state.url"
+            type="text"
+            size="md"
+            :placeholder="$t('neo4jConfiguration.placeholder.host')"
+            :trailing-icon="error ? 'i-carbon-warning-alt-filled' : undefined"
+            :ui="{
+              wrapper: 'w-full',
+            }"
+            @update:model-value="emitState()"
+        /></template>
+      </UFormGroup>
     </UFormGroup>
 
     <UFormGroup
+      name="type"
       :label="$t('neo4jConfiguration.label.type')"
       :ui="{
         container: 'flex flex-row items-center gap-x-2 w-full',
@@ -93,7 +152,7 @@ watch(
         :ui="{
           wrapper: 'w-full',
         }"
-        @update:model-value="emit('update:state', state)"
+        @update:model-value="emitState()"
       >
         <template #label>
           {{ getAuthTypeLabel }}
@@ -106,30 +165,44 @@ watch(
       v-if="state.type === 'basic'"
       class="space-y-4"
     >
-      <UFormGroup :label="$t('neo4jConfiguration.label.username')">
-        <UInput
-          v-model="(state.parameters as Neo4jBasicAuth).username"
-          type="text"
-          size="md"
-          :placeholder="$t('neo4jConfiguration.placeholder.username')"
-          :ui="{
-            wrapper: 'w-full',
-          }"
-          @update:model-value="emit('update:state', state)"
-        />
+      <UFormGroup
+        eager-validation
+        :label="$t('neo4jConfiguration.label.username')"
+        name="parameters.username"
+      >
+        <template #default="{ error }">
+          <UInput
+            v-model="(state.parameters as Neo4jBasicAuth).username"
+            type="text"
+            size="md"
+            :trailing-icon="error ? 'i-carbon-warning-alt-filled' : undefined"
+            :placeholder="$t('neo4jConfiguration.placeholder.username')"
+            :ui="{
+              wrapper: 'w-full',
+            }"
+            @update:model-value="emitState()"
+          />
+        </template>
       </UFormGroup>
 
-      <UFormGroup :label="$t('neo4jConfiguration.label.password')">
-        <UInput
-          v-model="(state.parameters as Neo4jBasicAuth).password"
-          type="password"
-          size="md"
-          :placeholder="$t('neo4jConfiguration.placeholder.password')"
-          :ui="{
-            wrapper: 'w-full',
-          }"
-          @update:model-value="emit('update:state', state)"
-        />
+      <UFormGroup
+        eager-validation
+        :label="$t('neo4jConfiguration.label.password')"
+        name="parameters.password"
+      >
+        <template #default="{ error }">
+          <UInput
+            v-model="(state.parameters as Neo4jBasicAuth).password"
+            type="password"
+            size="md"
+            :trailing-icon="error ? 'i-carbon-warning-alt-filled' : undefined"
+            :placeholder="$t('neo4jConfiguration.placeholder.password')"
+            :ui="{
+              wrapper: 'w-full',
+            }"
+            @update:model-value="emitState()"
+          />
+        </template>
       </UFormGroup>
     </div>
 
@@ -138,17 +211,24 @@ watch(
       v-if="state.type === 'kerberos'"
       class="space-y-4"
     >
-      <UFormGroup :label="$t('neo4jConfiguration.label.base64EncodedTicket')">
-        <UInput
-          v-model="(state.parameters as Neo4jKerberosAuth).base64EncodedTicket"
-          type="text"
-          size="md"
-          :placeholder="$t('neo4jConfiguration.placeholder.base64EncodedTicket')"
-          :ui="{
-            wrapper: 'w-full',
-          }"
-          @update:model-value="emit('update:state', state)"
-        />
+      <UFormGroup
+        eager-validation
+        :label="$t('neo4jConfiguration.label.base64EncodedTicket')"
+        name="parameters.base64EncodedTicket"
+      >
+        <template #default="{ error }">
+          <UInput
+            v-model="(state.parameters as Neo4jKerberosAuth).base64EncodedTicket"
+            type="text"
+            size="md"
+            :trailing-icon="error ? 'i-carbon-warning-alt-filled' : undefined"
+            :placeholder="$t('neo4jConfiguration.placeholder.base64EncodedTicket')"
+            :ui="{
+              wrapper: 'w-full',
+            }"
+            @update:model-value="emitState()"
+          />
+        </template>
       </UFormGroup>
     </div>
 
@@ -157,17 +237,24 @@ watch(
       v-if="state.type === 'bearer'"
       class="space-y-4"
     >
-      <UFormGroup :label="$t('neo4jConfiguration.label.base64EncodedToken')">
-        <UInput
-          v-model="(state.parameters as Neo4jBearerAuth).base64EncodedToken"
-          type="text"
-          size="md"
-          :placeholder="$t('neo4jConfiguration.placeholder.base64EncodedToken')"
-          :ui="{
-            wrapper: 'w-full',
-          }"
-          @update:model-value="emit('update:state', state)"
-        />
+      <UFormGroup
+        eager-validation
+        :label="$t('neo4jConfiguration.label.base64EncodedToken')"
+        name="parameters.base64EncodedToken"
+      >
+        <template #default="{ error }">
+          <UInput
+            v-model="(state.parameters as Neo4jBearerAuth).base64EncodedToken"
+            type="text"
+            size="md"
+            :trailing-icon="error ? 'i-carbon-warning-alt-filled' : undefined"
+            :placeholder="$t('neo4jConfiguration.placeholder.base64EncodedToken')"
+            :ui="{
+              wrapper: 'w-full',
+            }"
+            @update:model-value="emitState()"
+          />
+        </template>
       </UFormGroup>
     </div>
   </UForm>

@@ -57,7 +57,6 @@
   "neo4jConfiguration": {
     "label": {
       "connection": "Connection URL",
-      "host": "Host",
       "type": "Authentication type",
       "username": "Username",
       "password": "Password",
@@ -70,6 +69,11 @@
       "password": "your-password",
       "base64EncodedTicket": "your-base64-encoded-ticket",
       "base64EncodedToken": "your-base64-encoded-token"
+    },
+    "validation": {
+      "host": "Host address can not be empty.",
+      "username": "Username can not be empty.",
+      "password": "Password can not be empty."
     }
   },
   "mongodbConfiguration": {
