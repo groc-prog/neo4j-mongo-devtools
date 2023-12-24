@@ -1,4 +1,12 @@
 {
+  "neo4j": {
+    "auth": {
+      "basic": "Basic authentication",
+      "none": "No authentication",
+      "kerberos": "Kerberos authentication",
+      "bearer": "Bearer token authentication"
+    }
+  },
   "navigation": {
     "common": {
       "editor": "Graph editor",
@@ -8,7 +16,7 @@
     }
   },
   "gettingStarted": {
-    "title": "Get started with the next generation of developer-tooling 🚀",
+    "title": "Get started with the next generation of developer tooling 🚀",
     "description": {
       "beginning": "A new way to",
       "highlightedFeatures": "visualize, develop and debug",
@@ -27,10 +35,36 @@
     "divider": "OR",
     "import": {
       "description": "Import an existing configuration from a JSON-file. This will allow you to share your configuration with others."
+    },
+    "neo4j": {
+      "title": "Neo4j configuration",
+      "description": "Connection configurations for your Neo4j database."
+    },
+    "mongodb": {
+      "title": "MongoDB configuration",
+      "description": "Connection configurations for your MongoDB database."
     }
   },
   "inputFile": {
     "dropzoneEmpty": "Upload your config files",
     "dropzoneFiles": "{count} files selected"
+  },
+  "neo4jConfiguration": {
+    "label": {
+      "connection": "Connection URL",
+      "host": "Host",
+      "type": "Authentication type",
+      "username": "Username",
+      "password": "Password",
+      "base64EncodedTicket": "Base64 encoded ticket",
+      "base64EncodedToken": "Base64 encoded token"
+    },
+    "placeholder": {
+      "host": "your-host-address",
+      "username": "your-username",
+      "password": "your-password",
+      "base64EncodedTicket": "your-base64-encoded-ticket",
+      "base64EncodedToken": "your-base64-encoded-token"
+    }
   }
 }

@@ -5,7 +5,7 @@ const { t } = useI18n();
 <template>
   <div class="flex flex-col items-center text-center">
     <div class="mb-20">
-      <h1 class="text-title text-3xl sm:text-5xl font-bold">
+      <h1 class="text-title text-4xl sm:text-5xl font-bold">
         {{ $t('gettingStarted.title') }}
       </h1>
       <p class="text-description sm:text-lg mt-6">

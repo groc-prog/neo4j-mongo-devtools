@@ -1,3 +1,8 @@
+import { MongoClient } from 'mongodb';
+import { auth } from 'neo4j-driver';
+
+type Neo4jAuthType = Exclude<keyof typeof auth, 'custom'> | 'none';
+
 /**
  * The type of graph entity to use for the relation.
  */
@@ -46,11 +51,7 @@ export interface InstanceConfiguration {
   /**
    * The configuration for the Neo4j database connections.
    */
-  neo4j: {
-    url: string;
-    username: string;
-    password: string;
-  };
+  neo4j: Neo4jAuthConfiguration;
   /**
    * The configuration for the MongoDB database connections.
    */
@@ -65,4 +66,52 @@ export interface InstanceConfiguration {
    * MongoDB documents when querying Neo4j.
    */
   relations: DataRelation[];
+}
+
+/**
+ * The configuration for the Neo4j database connections.
+ */
+export interface Neo4jAuthConfiguration {
+  /**
+   * The URL of the Neo4j database.
+   */
+  url: string;
+  /**
+   * The URL scheme to use for the connection.
+   */
+  scheme: 'neo4j://' | 'bolt://';
+  /**
+   * The authentication method to use for the connection.
+   */
+  type: Neo4jAuthType;
+  /**
+   * The authentication parameters to use for the connection.
+   */
+  parameters: Neo4jBasicAuth | Neo4jKerberosAuth | Neo4jBearerAuth;
+}
+
+export interface Neo4jBasicAuth {
+  username: string;
+  password: string;
+}
+
+export interface Neo4jKerberosAuth {
+  base64EncodedTicket: string;
+}
+
+export interface Neo4jBearerAuth {
+  base64EncodedToken: string;
+}
+
+/**
+ * The configuration for the MongoDB database connections.
+ */
+export interface MongoDBAuthConfiguration {
+  /**
+   * The URL of the MongoDB database.
+   */
+  uri: string;
+
+  username: string;
+  password: string;
 }
