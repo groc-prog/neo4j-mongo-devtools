@@ -39,6 +39,7 @@
     "@pinia/nuxt": "^0.5.1",
     "@vueuse/nuxt": "^10.7.0",
     "mongodb": "^6.3.0",
-    "neo4j-driver": "^5.15.0"
+    "neo4j-driver": "^5.15.0",
+    "zod": "^3.22.4"
   }
 }
