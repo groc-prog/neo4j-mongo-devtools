@@ -38,6 +38,7 @@
     "title": "Starting from scratch",
     "description": "A new instance with no pre-configuration or relations. You will be connected and ready-to-go in no time!",
     "divider": "OR",
+    "button": "Create instance",
     "import": {
       "description": "Import an existing configuration from a JSON-file. This will allow you to share your configuration with others."
     },

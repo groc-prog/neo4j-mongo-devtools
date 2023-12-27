@@ -63,5 +63,14 @@ const configurationFiles = ref<FileList | null>(null);
       v-model:files="configurationFiles"
       class="h-64"
     />
+
+    <div class="mt-6 w-full text-right">
+      <UButton
+        size="lg"
+        to="/instances/new"
+        trailing-icon="i-carbon-arrow-right"
+        :label="t('newInstance.button')"
+      />
+    </div>
   </div>
 </template>
