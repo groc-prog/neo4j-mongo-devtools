@@ -1,9 +1,36 @@
-import { MongoClient } from 'mongodb';
-import { auth } from 'neo4j-driver';
+/* eslint-disable no-use-before-define */
 
-export type MongoMechanism = 'default';
-export type Neo4jScheme = 'neo4j://' | 'bolt://';
-type Neo4jAuthType = Exclude<keyof typeof auth, 'custom'> | 'none';
+/**
+ * Available URL schemes for Neo4j connections.
+ */
+export enum Neo4jScheme {
+  NEO4J = 'neo4j://',
+  BOLT = 'bolt://',
+}
+
+/**
+ * Available authentication methods for Neo4j connections.
+ */
+export enum Neo4jAuthType {
+  BASIC = 'basic',
+  KERBEROS = 'kerberos',
+  BEARER = 'bearer',
+  NONE = 'none',
+}
+
+/**
+ * Available URL schemes for MongoDB connections.
+ */
+export enum MongoScheme {
+  DEFAULT = 'mongodb://',
+}
+
+/**
+ * Available authentication mechanisms for MongoDB connections.
+ */
+export enum MongoMechanism {
+  DEFAULT = 'default',
+}
 
 /**
  * The type of graph entity to use for the relation.
@@ -57,11 +84,7 @@ export interface InstanceConfiguration {
   /**
    * The configuration for the MongoDB database connections.
    */
-  mongo: {
-    url: string;
-    username: string;
-    password: string;
-  };
+  mongo: MongoAuthConfiguration;
   /**
    * The configuration for the relations between MongoDB and Neo4j.
    * These configuration settings allow for automatic fetching of the related
@@ -85,7 +108,7 @@ export interface Neo4jAuthConfiguration {
   /**
    * The authentication method to use for the connection.
    */
-  type: Neo4jAuthType;
+  authType: Neo4jAuthType;
   /**
    * The authentication parameters to use for the connection.
    */
@@ -114,9 +137,16 @@ export interface MongoAuthConfiguration {
    */
   uri: string;
   /**
+   * The URL scheme to use for the connection.
+   */
+  scheme: MongoScheme;
+  /**
    * The authentication mechanism to use.
    */
   mechanism: MongoMechanism;
+  /**
+   * The authentication parameters to use for the connection.
+   */
   parameters: MongoDefaultAuth;
 }
 

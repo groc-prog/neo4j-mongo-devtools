@@ -13,7 +13,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
-const { mechanismOptions } = useMongoConfig();
+const { mechanismOptions, schemeOptions } = useMongoConfig();
 
 const schema = z.object({
   uri: z.string().min(1, t('mongoConfiguration.validation.uri')),
@@ -76,23 +76,44 @@ defineExpose({
     class="space-y-4"
   >
     <UFormGroup
-      eager-validation
-      name="uri"
+      required
       :label="$t('mongoConfiguration.label.connection')"
+      :ui="{
+        container: 'flex flex-row gap-x-2 w-full',
+      }"
     >
-      <template #default="{ error }">
-        <UInput
-          v-model="state.uri"
-          type="text"
+      <UFormGroup name="scheme">
+        <USelectMenu
+          v-model="state.scheme"
           size="md"
-          :trailing-icon="error ? 'i-carbon-warning-alt-filled' : undefined"
-          :placeholder="$t('mongoConfiguration.placeholder.uri')"
+          :options="schemeOptions"
           :ui="{
-            wrapper: 'w-full',
+            base: 'min-w-[7rem]',
           }"
           @update:model-value="emitState()"
         />
-      </template>
+      </UFormGroup>
+
+      <UFormGroup
+        name="uri"
+        :ui="{
+          wrapper: 'w-full',
+        }"
+      >
+        <template #default="{ error }">
+          <UInput
+            v-model="state.uri"
+            type="text"
+            size="md"
+            :trailing-icon="error ? 'i-carbon-warning-alt-filled' : undefined"
+            :placeholder="$t('mongoConfiguration.placeholder.uri')"
+            :ui="{
+              wrapper: 'w-full',
+            }"
+            @update:model-value="emitState()"
+          />
+        </template>
+      </UFormGroup>
     </UFormGroup>
 
     <UFormGroup
@@ -124,7 +145,6 @@ defineExpose({
       class="space-y-4"
     >
       <UFormGroup
-        eager-validation
         name="parameters.username"
         :label="$t('mongoConfiguration.label.username')"
       >
@@ -144,7 +164,6 @@ defineExpose({
       </UFormGroup>
 
       <UFormGroup
-        eager-validation
         name="parameters.password"
         :label="$t('mongoConfiguration.label.password')"
       >

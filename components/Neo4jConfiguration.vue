@@ -24,7 +24,7 @@ const { schemeOptions, authOptions } = useNeo4jConfig();
 const schema = z.object({
   url: z.string().min(1, t('neo4jConfiguration.validation.host')),
   scheme: z.string().refine((value) => schemeOptions.value.includes(value as Neo4jScheme)),
-  type: z.string().refine((value) => authOptions.value.map((option) => option.value).includes(value)),
+  authType: z.string().refine((value) => authOptions.value.map((option) => option.value).includes(value)),
   parameters: z.union([
     z.undefined(),
     z.object({
@@ -45,10 +45,10 @@ const state = reactive<Partial<Neo4jAuthConfiguration>>({
   ...props.state,
 });
 
-const getAuthTypeLabel = computed(() => authOptions.value.find((option) => option.value === state.type)?.label);
+const getAuthTypeLabel = computed(() => authOptions.value.find((option) => option.value === state.authType)?.label);
 
 watch(
-  () => state.type,
+  () => state.authType,
   (newAuthType) => {
     switch (newAuthType) {
       case 'none':
@@ -148,7 +148,7 @@ defineExpose({
       }"
     >
       <USelectMenu
-        v-model="state.type"
+        v-model="state.authType"
         size="md"
         value-attribute="value"
         :options="authOptions"
@@ -165,7 +165,7 @@ defineExpose({
 
     <!-- Basic authentication -->
     <div
-      v-if="state.type === 'basic'"
+      v-if="state.authType === 'basic'"
       class="space-y-4"
     >
       <UFormGroup
@@ -209,7 +209,7 @@ defineExpose({
 
     <!-- Kerberos authentication -->
     <div
-      v-if="state.type === 'kerberos'"
+      v-if="state.authType === 'kerberos'"
       class="space-y-4"
     >
       <UFormGroup
@@ -234,7 +234,7 @@ defineExpose({
 
     <!-- Bearer authentication -->
     <div
-      v-if="state.type === 'bearer'"
+      v-if="state.authType === 'bearer'"
       class="space-y-4"
     >
       <UFormGroup

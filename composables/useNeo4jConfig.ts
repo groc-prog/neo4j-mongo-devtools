@@ -1,9 +1,9 @@
-import type { Neo4jScheme } from '~/types/instance';
+import { Neo4jScheme } from '~/types/instance';
 
 export function useNeo4jConfig() {
   const { t } = useI18n();
 
-  const schemeOptions = ref<Neo4jScheme[]>(['neo4j://', 'bolt://']);
+  const schemeOptions = ref<Neo4jScheme[]>([Neo4jScheme.BOLT, Neo4jScheme.NEO4J]);
   const authOptions = ref([
     {
       label: t('neo4j.auth.none'),

@@ -1,16 +1,24 @@
 <script setup lang="ts">
-import type { MongoAuthConfiguration, Neo4jAuthConfiguration } from '~/types/instance';
+import {
+  Neo4jScheme,
+  type MongoAuthConfiguration,
+  type Neo4jAuthConfiguration,
+  Neo4jAuthType,
+  MongoMechanism,
+  MongoScheme,
+} from '~/types/instance';
 
 const { t } = useI18n();
 
 const neo4jConfiguration = reactive<Partial<Neo4jAuthConfiguration>>({
   url: 'localhost:7687',
-  scheme: 'neo4j://',
-  type: 'none',
+  scheme: Neo4jScheme.NEO4J,
+  authType: Neo4jAuthType.NONE,
 });
 const mongoConfiguration = reactive<Partial<MongoAuthConfiguration>>({
   uri: 'mongodb://localhost:27017',
-  mechanism: 'default',
+  scheme: MongoScheme.DEFAULT,
+  mechanism: MongoMechanism.DEFAULT,
 });
 const configurationFiles = ref<FileList | null>(null);
 </script>

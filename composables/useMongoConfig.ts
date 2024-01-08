@@ -1,6 +1,9 @@
+import { MongoScheme } from '~/types/instance';
+
 export function useMongoConfig() {
   const { t } = useI18n();
 
+  const schemeOptions = ref<MongoScheme[]>([MongoScheme.DEFAULT]);
   const mechanismOptions = ref([
     {
       label: t('mongodb.auth.default'),
@@ -10,5 +13,6 @@ export function useMongoConfig() {
 
   return {
     mechanismOptions,
+    schemeOptions,
   };
 }
