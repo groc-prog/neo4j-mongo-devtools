@@ -23,13 +23,16 @@ export enum Neo4jAuthType {
  */
 export enum MongoScheme {
   DEFAULT = 'mongodb://',
+  ATLAS = 'mongodb+srv://',
+  UNIX = 'mongodb+unix://',
 }
 
 /**
  * Available authentication mechanisms for MongoDB connections.
  */
 export enum MongoMechanism {
-  DEFAULT = 'default',
+  SCRAM = 'SCRAM',
+  NONE = 'NONE',
 }
 
 /**
@@ -62,8 +65,7 @@ export interface DataRelation {
  */
 export interface InstanceConfiguration {
   /**
-   * The unique identifier of the instance. Will be the documents `_id` field in MongoDB
-   * if `saveToMongo` is set to `true`.
+   * The unique identifier of the instance.
    */
   id: string;
   /**
@@ -112,7 +114,7 @@ export interface Neo4jAuthConfiguration {
   /**
    * The authentication parameters to use for the connection.
    */
-  parameters: Neo4jBasicAuth | Neo4jKerberosAuth | Neo4jBearerAuth;
+  parameters?: Neo4jBasicAuth | Neo4jKerberosAuth | Neo4jBearerAuth;
 }
 
 export interface Neo4jBasicAuth {
@@ -147,10 +149,18 @@ export interface MongoAuthConfiguration {
   /**
    * The authentication parameters to use for the connection.
    */
-  parameters: MongoDefaultAuth;
+  parameters?: MongoSCRAMAuth;
 }
 
-export interface MongoDefaultAuth {
+export interface MongoSCRAMAuth {
   username: string;
   password: string;
+}
+
+/**
+ * The configuration for a new instance.
+ */
+export interface CreateInstanceConfiguration {
+  neo4j: Neo4jAuthConfiguration;
+  mongo: MongoAuthConfiguration;
 }

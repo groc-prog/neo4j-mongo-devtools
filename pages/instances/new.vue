@@ -10,17 +10,17 @@ import {
 
 const { t } = useI18n();
 
+const configurationFiles = ref<FileList | null>(null);
 const neo4jConfiguration = reactive<Partial<Neo4jAuthConfiguration>>({
   url: 'localhost:7687',
   scheme: Neo4jScheme.NEO4J,
   authType: Neo4jAuthType.NONE,
 });
 const mongoConfiguration = reactive<Partial<MongoAuthConfiguration>>({
-  uri: 'mongodb://localhost:27017',
+  uri: 'localhost:27017',
   scheme: MongoScheme.DEFAULT,
-  mechanism: MongoMechanism.DEFAULT,
+  mechanism: MongoMechanism.NONE,
 });
-const configurationFiles = ref<FileList | null>(null);
 </script>
 
 <template>
@@ -75,9 +75,8 @@ const configurationFiles = ref<FileList | null>(null);
     <div class="mt-6 w-full text-right">
       <UButton
         size="lg"
-        to="/instances/new"
         trailing-icon="i-carbon-arrow-right"
-        :label="t('newInstance.button')"
+        :label="t('newInstance.cta.create')"
       />
     </div>
   </div>

@@ -3,7 +3,7 @@ import type { UForm } from '#build/components';
 import _ from 'lodash';
 import { z } from 'zod';
 
-import type { MongoAuthConfiguration, MongoDefaultAuth, MongoMechanism } from '~/types/instance';
+import { type MongoAuthConfiguration, type MongoSCRAMAuth, MongoMechanism, MongoScheme } from '~/types/instance';
 
 const props = defineProps<{
   state: Partial<MongoAuthConfiguration>;
@@ -17,13 +17,15 @@ const { mechanismOptions, schemeOptions } = useMongoConfig();
 
 const schema = z.object({
   uri: z.string().min(1, t('mongoConfiguration.validation.uri')),
-  mechanism: z
-    .string()
-    .refine((value) => mechanismOptions.value.map(({ value }) => value).includes(value as MongoMechanism)),
-  parameters: z.object({
-    username: z.string().min(1, t('mongoConfiguration.validation.username')),
-    password: z.string().min(1, t('mongoConfiguration.validation.password')),
-  }),
+  scheme: z.nativeEnum(MongoScheme),
+  mechanism: z.nativeEnum(MongoMechanism),
+  parameters: z.union([
+    z.undefined(),
+    z.object({
+      username: z.string().min(1, t('mongoConfiguration.validation.username')),
+      password: z.string().min(1, t('mongoConfiguration.validation.password')),
+    }),
+  ]),
 });
 
 const form = ref<typeof UForm | null>(null);
@@ -39,13 +41,14 @@ watch(
   () => state.mechanism,
   (newAuthType) => {
     switch (newAuthType) {
-      case 'default':
+      case MongoMechanism.SCRAM:
         state.parameters = {
           username: '',
           password: '',
         };
         break;
       default:
+        state.parameters = undefined;
         break;
     }
   },
@@ -88,7 +91,7 @@ defineExpose({
           size="md"
           :options="schemeOptions"
           :ui="{
-            base: 'min-w-[7rem]',
+            base: 'min-w-[10.5rem]',
           }"
           @update:model-value="emitState()"
         />
@@ -141,7 +144,7 @@ defineExpose({
 
     <!-- Default mechanism -->
     <div
-      v-if="state.mechanism === 'default'"
+      v-if="state.mechanism === MongoMechanism.SCRAM"
       class="space-y-4"
     >
       <UFormGroup
@@ -150,7 +153,7 @@ defineExpose({
       >
         <template #default="{ error }">
           <UInput
-            v-model="(state.parameters as MongoDefaultAuth).username"
+            v-model="(state.parameters as MongoSCRAMAuth).username"
             type="text"
             size="md"
             :trailing-icon="error ? 'i-carbon-warning-alt-filled' : undefined"
@@ -169,7 +172,7 @@ defineExpose({
       >
         <template #default="{ error }">
           <UInput
-            v-model="(state.parameters as MongoDefaultAuth).password"
+            v-model="(state.parameters as MongoSCRAMAuth).password"
             type="password"
             size="md"
             :trailing-icon="error ? 'i-carbon-warning-alt-filled' : undefined"

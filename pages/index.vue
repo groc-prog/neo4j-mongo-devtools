@@ -27,7 +27,7 @@ const { t } = useI18n();
         size="lg"
         icon="i-carbon-cloud-satellite"
         to="/instances/new"
-        :label="t('gettingStarted.new.button')"
+        :label="t('gettingStarted.new.cta')"
       />
     </div>
   </div>

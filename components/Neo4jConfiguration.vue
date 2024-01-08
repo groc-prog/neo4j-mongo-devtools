@@ -3,12 +3,13 @@ import type { UForm } from '#build/components';
 import _ from 'lodash';
 import { z } from 'zod';
 
-import type {
-  Neo4jAuthConfiguration,
-  Neo4jBasicAuth,
-  Neo4jKerberosAuth,
-  Neo4jBearerAuth,
+import {
+  type Neo4jAuthConfiguration,
+  type Neo4jBasicAuth,
+  type Neo4jKerberosAuth,
+  type Neo4jBearerAuth,
   Neo4jScheme,
+  Neo4jAuthType,
 } from '~/types/instance';
 
 const props = defineProps<{
@@ -23,8 +24,8 @@ const { schemeOptions, authOptions } = useNeo4jConfig();
 
 const schema = z.object({
   url: z.string().min(1, t('neo4jConfiguration.validation.host')),
-  scheme: z.string().refine((value) => schemeOptions.value.includes(value as Neo4jScheme)),
-  authType: z.string().refine((value) => authOptions.value.map((option) => option.value).includes(value)),
+  scheme: z.nativeEnum(Neo4jScheme),
+  authType: z.nativeEnum(Neo4jAuthType),
   parameters: z.union([
     z.undefined(),
     z.object({
@@ -51,21 +52,21 @@ watch(
   () => state.authType,
   (newAuthType) => {
     switch (newAuthType) {
-      case 'none':
+      case Neo4jAuthType.NONE:
         state.parameters = undefined;
         break;
-      case 'basic':
+      case Neo4jAuthType.BASIC:
         state.parameters = {
           username: '',
           password: '',
         };
         break;
-      case 'kerberos':
+      case Neo4jAuthType.KERBEROS:
         state.parameters = {
           base64EncodedTicket: '',
         };
         break;
-      case 'bearer':
+      case Neo4jAuthType.BEARER:
         state.parameters = {
           base64EncodedToken: '',
         };
@@ -165,7 +166,7 @@ defineExpose({
 
     <!-- Basic authentication -->
     <div
-      v-if="state.authType === 'basic'"
+      v-if="state.authType === Neo4jAuthType.BASIC"
       class="space-y-4"
     >
       <UFormGroup
@@ -209,7 +210,7 @@ defineExpose({
 
     <!-- Kerberos authentication -->
     <div
-      v-if="state.authType === 'kerberos'"
+      v-if="state.authType === Neo4jAuthType.KERBEROS"
       class="space-y-4"
     >
       <UFormGroup
@@ -234,7 +235,7 @@ defineExpose({
 
     <!-- Bearer authentication -->
     <div
-      v-if="state.authType === 'bearer'"
+      v-if="state.authType === Neo4jAuthType.BEARER"
       class="space-y-4"
     >
       <UFormGroup

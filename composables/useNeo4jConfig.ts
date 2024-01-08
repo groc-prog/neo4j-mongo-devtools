@@ -1,4 +1,4 @@
-import { Neo4jScheme } from '~/types/instance';
+import { Neo4jAuthType, Neo4jScheme } from '~/types/instance';
 
 export function useNeo4jConfig() {
   const { t } = useI18n();
@@ -7,19 +7,19 @@ export function useNeo4jConfig() {
   const authOptions = ref([
     {
       label: t('neo4j.auth.none'),
-      value: 'none',
+      value: Neo4jAuthType.NONE,
     },
     {
       label: t('neo4j.auth.basic'),
-      value: 'basic',
+      value: Neo4jAuthType.BASIC,
     },
     {
       label: t('neo4j.auth.kerberos'),
-      value: 'kerberos',
+      value: Neo4jAuthType.KERBEROS,
     },
     {
       label: t('neo4j.auth.bearer'),
-      value: 'bearer',
+      value: Neo4jAuthType.BEARER,
     },
   ]);
 

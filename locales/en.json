@@ -9,7 +9,8 @@
   },
   "mongodb": {
     "auth": {
-      "default": "Default authentication"
+      "scram": "SCRAM authentication",
+      "none": "No authentication"
     }
   },
   "navigation": {
@@ -29,16 +30,18 @@
       "highlightedDx": "developer experience in mind."
     },
     "new": {
-      "title": "No instances? No problem!",
+      "title": "No instances yet? No problem!",
       "description": "We will get you right up and running with a brand new instance. We just have to take care of a bit of configuration first.",
-      "button": "Create a new instance"
+      "cta": "Create a new instance"
     }
   },
   "newInstance": {
     "title": "Starting from scratch",
     "description": "A new instance with no pre-configuration or relations. You will be connected and ready-to-go in no time!",
     "divider": "OR",
-    "button": "Create instance",
+    "cta": {
+      "create": "Create instance"
+    },
     "import": {
       "description": "Import an existing configuration from a JSON-file. This will allow you to share your configuration with others."
     },

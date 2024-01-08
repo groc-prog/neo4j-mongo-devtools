@@ -3,8 +3,10 @@ import { AuthToken, driver, auth } from 'neo4j-driver';
 import z from 'zod';
 
 import {
+  CreateInstanceConfiguration,
   MongoAuthConfiguration,
   MongoMechanism,
+  MongoSCRAMAuth,
   MongoScheme,
   Neo4jAuthConfiguration,
   Neo4jAuthType,
@@ -13,11 +15,6 @@ import {
   Neo4jKerberosAuth,
   Neo4jScheme,
 } from '~/types/instance';
-
-interface EventNodeRequest {
-  neo4j: Neo4jAuthConfiguration;
-  mongo: MongoAuthConfiguration;
-}
 
 const logger = useLogger();
 const schema = z.object({
@@ -57,12 +54,18 @@ const schema = z.object({
  */
 async function checkMongoConnection({ uri, scheme, mechanism, parameters }: MongoAuthConfiguration): Promise<boolean> {
   logger.info('Checking MongoDB connection', { uri, scheme, mechanism, parameters });
-  let connectionUri: string;
+  let connectionUri: string, username: string, password: string;
 
   switch (mechanism) {
+    case MongoMechanism.SCRAM:
+      logger.debug('Using SCRAM authentication');
+      ({ username, password } = parameters as MongoSCRAMAuth);
+
+      connectionUri = `${scheme}${username}:${password}@${uri}`;
+      break;
     default:
-      logger.debug('Using default MongoDB mechanism');
-      connectionUri = `${scheme}${parameters.username}:${parameters.password}@${uri}`;
+      logger.debug('Using no authentication');
+      connectionUri = `${scheme}${uri}`;
       break;
   }
 
@@ -89,23 +92,21 @@ async function checkMongoConnection({ uri, scheme, mechanism, parameters }: Mong
  */
 async function checkNeo4jConnection({ url, scheme, authType, parameters }: Neo4jAuthConfiguration): Promise<boolean> {
   logger.info('Checking Neo4j connection', { url, scheme, authType, parameters });
+  let clientAuth: AuthToken | undefined, username: string, password: string;
   const clientUrl = `${scheme}${url}`;
-  let clientAuth: AuthToken | undefined;
-  let username: string;
-  let password: string;
 
   switch (authType) {
-    case 'basic':
+    case Neo4jAuthType.BASIC:
       logger.debug('Using basic authentication');
       ({ username, password } = parameters as Neo4jBasicAuth);
 
       clientAuth = auth.basic(username, password);
       break;
-    case 'bearer':
+    case Neo4jAuthType.BEARER:
       logger.debug('Using bearer Neo4j authentication');
       clientAuth = auth.bearer((parameters as Neo4jBearerAuth).base64EncodedToken);
       break;
-    case 'kerberos':
+    case Neo4jAuthType.KERBEROS:
       logger.debug('Using kerberos authentication');
       clientAuth = auth.kerberos((parameters as Neo4jKerberosAuth).base64EncodedTicket);
       break;
@@ -129,7 +130,7 @@ async function checkNeo4jConnection({ url, scheme, authType, parameters }: Neo4j
   }
 }
 
-export default defineEventHandler<{ body: EventNodeRequest }>(async (event) => {
+export default defineEventHandler<{ body: CreateInstanceConfiguration }>(async (event) => {
   const requestBody = await readBody(event);
 
   const validatedData = useValidation(schema, requestBody);
