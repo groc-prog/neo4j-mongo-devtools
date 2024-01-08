@@ -1,4 +1,4 @@
-export function useMongoDBConfig() {
+export function useMongoConfig() {
   const { t } = useI18n();
 
   const mechanismOptions = ref([

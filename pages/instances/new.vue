@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MongoDBAuthConfiguration, Neo4jAuthConfiguration } from '~/types/instance';
+import type { MongoAuthConfiguration, Neo4jAuthConfiguration } from '~/types/instance';
 
 const { t } = useI18n();
 
@@ -8,7 +8,7 @@ const neo4jConfiguration = reactive<Partial<Neo4jAuthConfiguration>>({
   scheme: 'neo4j://',
   type: 'none',
 });
-const mongodbConfiguration = reactive<Partial<MongoDBAuthConfiguration>>({
+const mongoConfiguration = reactive<Partial<MongoAuthConfiguration>>({
   uri: 'mongodb://localhost:27017',
   mechanism: 'default',
 });
@@ -43,11 +43,11 @@ const configurationFiles = ref<FileList | null>(null);
       <div>
         <h2 class="text-title text-xl font-semibold">{{ $t('newInstance.mongodb.title') }}</h2>
         <p class="text-description mt-1 mb-8">{{ $t('newInstance.mongodb.description') }}</p>
-        <MongoDBConfiguration
-          v-model:state="mongodbConfiguration"
+        <MongoConfiguration
+          v-model:state="mongoConfiguration"
           @update:state="
             () => {
-              console.log('UPDATE STATE', mongodbConfiguration);
+              console.log('UPDATE STATE', mongoConfiguration);
             }
           "
         />

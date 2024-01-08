@@ -3,31 +3,31 @@ import type { UForm } from '#build/components';
 import _ from 'lodash';
 import { z } from 'zod';
 
-import type { MongoDBAuthConfiguration, MongoDBDefaultAuth, MongoDBMechanism } from '~/types/instance';
+import type { MongoAuthConfiguration, MongoDefaultAuth, MongoMechanism } from '~/types/instance';
 
 const props = defineProps<{
-  state: Partial<MongoDBAuthConfiguration>;
+  state: Partial<MongoAuthConfiguration>;
 }>();
 const emit = defineEmits<{
-  (e: 'update:state', state: Partial<MongoDBAuthConfiguration>): void;
+  (e: 'update:state', state: Partial<MongoAuthConfiguration>): void;
 }>();
 
 const { t } = useI18n();
-const { mechanismOptions } = useMongoDBConfig();
+const { mechanismOptions } = useMongoConfig();
 
 const schema = z.object({
-  uri: z.string().min(1, t('mongodbConfiguration.validation.uri')),
+  uri: z.string().min(1, t('mongoConfiguration.validation.uri')),
   mechanism: z
     .string()
-    .refine((value) => mechanismOptions.value.map(({ value }) => value).includes(value as MongoDBMechanism)),
+    .refine((value) => mechanismOptions.value.map(({ value }) => value).includes(value as MongoMechanism)),
   parameters: z.object({
-    username: z.string().min(1, t('mongodbConfiguration.validation.username')),
-    password: z.string().min(1, t('mongodbConfiguration.validation.password')),
+    username: z.string().min(1, t('mongoConfiguration.validation.username')),
+    password: z.string().min(1, t('mongoConfiguration.validation.password')),
   }),
 });
 
 const form = ref<typeof UForm | null>(null);
-const state = reactive<Partial<MongoDBAuthConfiguration>>({
+const state = reactive<Partial<MongoAuthConfiguration>>({
   ...props.state,
 });
 
@@ -78,7 +78,7 @@ defineExpose({
     <UFormGroup
       eager-validation
       name="uri"
-      :label="$t('mongodbConfiguration.label.connection')"
+      :label="$t('mongoConfiguration.label.connection')"
     >
       <template #default="{ error }">
         <UInput
@@ -86,7 +86,7 @@ defineExpose({
           type="text"
           size="md"
           :trailing-icon="error ? 'i-carbon-warning-alt-filled' : undefined"
-          :placeholder="$t('mongodbConfiguration.placeholder.uri')"
+          :placeholder="$t('mongoConfiguration.placeholder.uri')"
           :ui="{
             wrapper: 'w-full',
           }"
@@ -97,7 +97,7 @@ defineExpose({
 
     <UFormGroup
       name="mechanism"
-      :label="$t('mongodbConfiguration.label.mechanism')"
+      :label="$t('mongoConfiguration.label.mechanism')"
       :ui="{
         container: 'flex flex-row items-center gap-x-2 w-full',
       }"
@@ -126,15 +126,15 @@ defineExpose({
       <UFormGroup
         eager-validation
         name="parameters.username"
-        :label="$t('mongodbConfiguration.label.username')"
+        :label="$t('mongoConfiguration.label.username')"
       >
         <template #default="{ error }">
           <UInput
-            v-model="(state.parameters as MongoDBDefaultAuth).username"
+            v-model="(state.parameters as MongoDefaultAuth).username"
             type="text"
             size="md"
             :trailing-icon="error ? 'i-carbon-warning-alt-filled' : undefined"
-            :placeholder="$t('mongodbConfiguration.placeholder.username')"
+            :placeholder="$t('mongoConfiguration.placeholder.username')"
             :ui="{
               wrapper: 'w-full',
             }"
@@ -146,15 +146,15 @@ defineExpose({
       <UFormGroup
         eager-validation
         name="parameters.password"
-        :label="$t('mongodbConfiguration.label.password')"
+        :label="$t('mongoConfiguration.label.password')"
       >
         <template #default="{ error }">
           <UInput
-            v-model="(state.parameters as MongoDBDefaultAuth).password"
+            v-model="(state.parameters as MongoDefaultAuth).password"
             type="password"
             size="md"
             :trailing-icon="error ? 'i-carbon-warning-alt-filled' : undefined"
-            :placeholder="$t('mongodbConfiguration.placeholder.password')"
+            :placeholder="$t('mongoConfiguration.placeholder.password')"
             :ui="{
               wrapper: 'w-full',
             }"

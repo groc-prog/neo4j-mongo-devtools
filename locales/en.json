@@ -79,7 +79,7 @@
       "base64EncodedToken": "Token can not be empty."
     }
   },
-  "mongodbConfiguration": {
+  "mongoConfiguration": {
     "label": {
       "connection": "Connection URL",
       "mechanism": "Authentication mechanism",
