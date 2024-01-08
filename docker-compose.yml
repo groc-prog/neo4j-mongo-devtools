@@ -3,6 +3,8 @@ version: '3'
 services:
   mongodb:
     image: mongo:latest
+    ports:
+      - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
@@ -11,6 +13,9 @@ services:
 
   neo4j:
     image: neo4j:latest
+    ports:
+      - 7474:7474
+      - 7687:7687
     environment:
       - NEO4J_AUTH=neo4j/password
     volumes:
