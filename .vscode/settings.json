@@ -9,7 +9,9 @@
     "**/Thumbs.db": true,
     ".eslintcache": true,
     "node_modules": true,
-    ".nuxt": true
+    ".nuxt": true,
+    ".mongo": true,
+    ".neo4j": true
   },
   "files.associations": {
     "*.css": "tailwindcss"
@@ -22,5 +24,6 @@
     ["ui:\\s*{([^)]*)\\s*}", "[\"'`]([^\"'`]*).*?[\"'`]"],
     ["/\\*ui\\*/\\s*{([^;]*)}", ":\\s*[\"'`]([^\"'`]*).*?[\"'`]"]
   ],
-  "tailwindCSS.classAttributes": ["class", "className", "ngClass", "ui"]
+  "tailwindCSS.classAttributes": ["class", "className", "ngClass", "ui"],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

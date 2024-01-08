@@ -5,6 +5,6 @@
   "singleAttributePerLine": true,
   "trailingComma": "all",
   "importOrderSeparation": true,
-  "importOrder": ["^(./|../)(.*)$", "^@/(.*)$"],
+  "importOrder": ["^(./|../)(.*)$", "^~/(.*)$"],
   "plugins": ["@trivago/prettier-plugin-sort-imports"]
 }

@@ -6,6 +6,10 @@
 .cache
 dist
 
+# Databases
+.mongo
+.neo4j
+
 # Node dependencies
 node_modules
 
