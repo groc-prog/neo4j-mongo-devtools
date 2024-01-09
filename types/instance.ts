@@ -156,11 +156,3 @@ export interface MongoSCRAMAuth {
   username: string;
   password: string;
 }
-
-/**
- * The configuration for a new instance.
- */
-export interface CreateInstanceConfiguration {
-  neo4j: Neo4jAuthConfiguration;
-  mongo: MongoAuthConfiguration;
-}

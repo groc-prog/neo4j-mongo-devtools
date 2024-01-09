@@ -2,17 +2,17 @@ import { MongoClient } from 'mongodb';
 import { AuthToken, driver, auth } from 'neo4j-driver';
 import z from 'zod';
 
+import type { ConnectionStatus, InstanceAuthConfiguration } from '~/types/api/instance';
 import {
-  CreateInstanceConfiguration,
-  MongoAuthConfiguration,
+  type MongoAuthConfiguration,
   MongoMechanism,
   MongoSCRAMAuth,
   MongoScheme,
-  Neo4jAuthConfiguration,
+  type Neo4jAuthConfiguration,
   Neo4jAuthType,
-  Neo4jBasicAuth,
-  Neo4jBearerAuth,
-  Neo4jKerberosAuth,
+  type Neo4jBasicAuth,
+  type Neo4jBearerAuth,
+  type Neo4jKerberosAuth,
   Neo4jScheme,
 } from '~/types/instance';
 
@@ -23,6 +23,7 @@ const schema = z.object({
     scheme: z.nativeEnum(Neo4jScheme),
     authType: z.nativeEnum(Neo4jAuthType),
     parameters: z.union([
+      z.undefined(),
       z.object({
         username: z.string(),
         password: z.string(),
@@ -39,10 +40,13 @@ const schema = z.object({
     uri: z.string(),
     scheme: z.nativeEnum(MongoScheme),
     mechanism: z.nativeEnum(MongoMechanism),
-    parameters: z.object({
-      username: z.string(),
-      password: z.string(),
-    }),
+    parameters: z.union([
+      z.undefined(),
+      z.object({
+        username: z.string(),
+        password: z.string(),
+      }),
+    ]),
   }),
 });
 
@@ -130,25 +134,18 @@ async function checkNeo4jConnection({ url, scheme, authType, parameters }: Neo4j
   }
 }
 
-export default defineEventHandler<{ body: CreateInstanceConfiguration }>(async (event) => {
+export default defineEventHandler<{ body: InstanceAuthConfiguration }, Promise<ConnectionStatus>>(async (event) => {
   const requestBody = await readBody(event);
 
   const validatedData = useValidation(schema, requestBody);
 
-  const [mongoConnected, neo4jConnected] = await Promise.all([
+  const [mongodbConnectionSuccessful, neo4jConnectionSuccessful] = await Promise.all([
     checkMongoConnection(validatedData.mongo),
     checkNeo4jConnection(validatedData.neo4j),
   ]);
 
-  if (!mongoConnected || !neo4jConnected) {
-    throw createError({
-      status: 400,
-      statusMessage: 'Connection failure',
-      message: 'One or more connections could not be established.',
-      data: {
-        mongoConnected,
-        neo4jConnected,
-      },
-    });
-  }
+  return {
+    mongodbConnectionSuccessful,
+    neo4jConnectionSuccessful,
+  };
 });

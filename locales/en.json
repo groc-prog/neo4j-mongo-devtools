@@ -40,7 +40,8 @@
     "description": "A new instance with no pre-configuration or relations. You will be connected and ready-to-go in no time!",
     "divider": "OR",
     "cta": {
-      "create": "Create instance"
+      "create": "Create instance",
+      "check": "Check connection"
     },
     "import": {
       "description": "Import an existing configuration from a JSON-file. This will allow you to share your configuration with others."
@@ -98,6 +99,15 @@
       "uri": "URI can not be empty.",
       "username": "Username can not be empty.",
       "password": "Password can not be empty."
+    }
+  },
+  "instanceStore": {
+    "toast": {
+      "checkingConnectionFailed": {
+        "title": "Failed to check connections.",
+        "description": "A unknown error occurred while checking the database connections.",
+        "action": "Try again"
+      }
     }
   }
 }
