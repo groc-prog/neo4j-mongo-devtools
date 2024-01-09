@@ -9,18 +9,47 @@ import {
 } from '~/types/instance';
 
 const { t } = useI18n();
+const toast = useToast();
+
+async function checkConnection() {
+  // const { data, error } = await instanceRepository.checkDatabaseConnection({
+  //   neo4j: neo4jConfiguration,
+  //   mongo: mongoConfiguration,
+  // });
+  // if (error.value) {
+  //   toast.add({
+  //     title: t('instanceStore.toast.checkingConnectionFailed.title'),
+  //     description: t('instanceStore.toast.checkingConnectionFailed.description'),
+  //     color: 'red',
+  //     icon: 'i-carbon-error',
+  //     actions: [
+  //       {
+  //         label: t('instanceStore.toast.checkingConnectionFailed.action'),
+  //         color: 'gray',
+  //         click: () => {},
+  //       },
+  //     ],
+  //   });
+  // }
+}
 
 const configurationFiles = ref<FileList | null>(null);
-const neo4jConfiguration = reactive<Partial<Neo4jAuthConfiguration>>({
+const validationState = reactive({
+  mongo: true,
+  neo4j: true,
+});
+const neo4jConfiguration = reactive<Neo4jAuthConfiguration>({
   url: 'localhost:7687',
   scheme: Neo4jScheme.NEO4J,
   authType: Neo4jAuthType.NONE,
 });
-const mongoConfiguration = reactive<Partial<MongoAuthConfiguration>>({
+const mongoConfiguration = reactive<MongoAuthConfiguration>({
   uri: 'localhost:27017',
   scheme: MongoScheme.DEFAULT,
   mechanism: MongoMechanism.NONE,
 });
+
+const isValidConfig = computed(() => validationState.mongo && validationState.neo4j);
 </script>
 
 <template>
@@ -40,11 +69,7 @@ const mongoConfiguration = reactive<Partial<MongoAuthConfiguration>>({
         <p class="text-description mt-1 mb-8">{{ $t('newInstance.neo4j.description') }}</p>
         <Neo4jConfiguration
           v-model:state="neo4jConfiguration"
-          @update:state="
-            () => {
-              console.log('UPDATE STATE', neo4jConfiguration);
-            }
-          "
+          v-model:valid="validationState.neo4j"
         />
       </div>
 
@@ -53,11 +78,7 @@ const mongoConfiguration = reactive<Partial<MongoAuthConfiguration>>({
         <p class="text-description mt-1 mb-8">{{ $t('newInstance.mongodb.description') }}</p>
         <MongoConfiguration
           v-model:state="mongoConfiguration"
-          @update:state="
-            () => {
-              console.log('UPDATE STATE', mongoConfiguration);
-            }
-          "
+          v-model:valid="validationState.mongo"
         />
       </div>
     </div>
@@ -71,8 +92,14 @@ const mongoConfiguration = reactive<Partial<MongoAuthConfiguration>>({
       v-model:files="configurationFiles"
       class="h-64"
     />
-
-    <div class="mt-6 w-full text-right">
+    <div class="flex justify-end mt-14 w-full gap-x-2">
+      <UButton
+        size="lg"
+        color="gray"
+        :label="t('newInstance.cta.check')"
+        :disabled="!isValidConfig"
+        @click="checkConnection()"
+      />
       <UButton
         size="lg"
         trailing-icon="i-carbon-arrow-right"

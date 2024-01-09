@@ -5,11 +5,18 @@ import { z } from 'zod';
 
 import { type MongoAuthConfiguration, type MongoSCRAMAuth, MongoMechanism, MongoScheme } from '~/types/instance';
 
-const props = defineProps<{
-  state: Partial<MongoAuthConfiguration>;
-}>();
+const props = withDefaults(
+  defineProps<{
+    state: Partial<MongoAuthConfiguration>;
+    valid?: boolean;
+  }>(),
+  {
+    valid: true,
+  },
+);
 const emit = defineEmits<{
   (e: 'update:state', state: Partial<MongoAuthConfiguration>): void;
+  (e: 'update:valid', valid: boolean): void;
 }>();
 
 const { t } = useI18n();
@@ -61,9 +68,12 @@ const emitState = _.debounce(() => {
   form.value
     .validate()
     .then(() => {
+      emit('update:valid', true);
       emit('update:state', state);
     })
-    .catch(() => {});
+    .catch(() => {
+      emit('update:valid', false);
+    });
 }, 250);
 
 defineExpose({
